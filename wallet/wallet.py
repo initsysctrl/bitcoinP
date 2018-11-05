@@ -7,6 +7,7 @@
 @describe: 
 """
 import bitcoin
+import secrets
 
 
 class Wallet:
@@ -25,12 +26,13 @@ def generate_new_wallet() -> Wallet:
     :rtype: 新的比特币钱包
     """
     # 1. 随机数
+
     orige_private_key = bitcoin.random_key()  # getStartKey();
     print("orige_private_key=", orige_private_key)
     # 私钥
     dec_privatekey = bitcoin.decode_privkey(orige_private_key, 'hex')
     print("decPrivatekey=", dec_privatekey)
-
+    secrets.randbits(256)
     return Wallet(privatea_key=dec_privatekey)
 
 
