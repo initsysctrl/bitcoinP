@@ -10,17 +10,36 @@
 import time
 
 # 版本号
+from typing import List
+
 VERSION_NUMBER = 0
 
 
-class Transction:
-    class Input:
-        pass
+class VIn:
+    def __init__(self, _txid: str, _vout: int, _scriptsig: str, _sequence: int):
+        # txid，vout，scriptSig，sequence
+        self.txid = _txid
+        self.vout = _vout
+        self.scriptSig = _scriptsig
+        self.sequence = _sequence
 
-    class Outputs:
-        pass
+    def __str__(self) -> str:
+        return str(self.__dict__)
 
-    def __init__(self, _inputs=(), _outputs=()):
+
+class VOut:
+    def __init__(self, _value: float, _script_pubkey: str):
+        self.value = _value
+        self.scriptPubKey = _script_pubkey
+
+    def __str__(self) -> str:
+        return str(self.__dict__)
+
+
+class Transction(object):
+    def __init__(self, _inputs: list, _outputs: list):
+        # assert isinstance(_inputs, list)
+        # assert isinstance(_outputs, list)
         self.version = VERSION_NUMBER
         self.input_count = len(_inputs)
         self.inputs = _inputs
@@ -33,6 +52,9 @@ class Transction:
 
 
 if __name__ == '__main__':
-    t = Transction()
+    inputs = [VIn('li xiao lai cao ni ma ', 123, 'aaa', 23123213213), VIn('li xiao lai cao ni ma ', 123, 'aaa', 2)]
+    outputs = [VOut(12.22222, 'outoutoutout', )]
+    t = Transction(inputs, outputs)
     print(t)
-    pass
+
+pass

@@ -13,7 +13,6 @@ import hashlib
 class Block:
     def __init__(self, _block_head=None, _trans=()):
         # 大小
-
         self.size = 0
         # 区块头
         self.block_head = None

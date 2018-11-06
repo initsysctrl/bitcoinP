@@ -12,6 +12,9 @@ import secrets
 
 class Wallet:
     def __init__(self, privatea_key=None):
+        if privatea_key is None:
+            raise ValueError('privatea_key==null')
+
         self.private_key = privatea_key
         if privatea_key is not None:
             self.public_key = bitcoin.privkey_to_pubkey(privatea_key)
@@ -21,7 +24,7 @@ class Wallet:
             self.address = None
 
 
-def generate_new_wallet() -> Wallet:
+def generate_wallet() -> Wallet:
     """
     :rtype: 新的比特币钱包
     """
@@ -39,5 +42,5 @@ def generate_new_wallet() -> Wallet:
 if __name__ == '__main__':
     w = Wallet()
     print(w.__dict__)
-    w = generate_new_wallet()
+    w = generate_wallet()
     print(w.__dict__)
