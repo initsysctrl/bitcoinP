@@ -51,18 +51,8 @@ class Wallet(object):
         p = ecdsa.SigningKey.from_string(secret, curve=ecdsa.SECP256k1).verifying_key.pubkey.point
         x_str = ecdsa.util.number_to_string(p.x(), order)
         y_str = ecdsa.util.number_to_string(p.y(), order)
-        compressed = (bytes(chr(2 + (p.y() & 1)), 'ascii') + x_str).hex()
-        uncompressed = (bytes(chr(4), 'ascii') + x_str + y_str).hex()
-        p = 115792089237316195423570985008687907853269984665640564039457584007908834671663
-        x = int(x_str.hex(), 16)
-        print('x=', int(x_str.hex(), 16))
-        y = int(y_str.hex(), 16)
-        z = (x ** 3 + 7 - y ** 2) % p
-        print('x=', x)
-        print('y=', y)
-        print('z=', z)
-        print('compressed = ', compressed)
-        print('uncompressed = ', uncompressed)
+        compressed = hexlify(bytes(chr(2 + (p.y() & 1)), 'ascii') + x_str).decode('ascii')
+        uncompressed = hexlify(bytes(chr(4), 'ascii') + x_str + y_str).decode('ascii')
         return compressed, uncompressed
 
     # 由公钥生成地址
