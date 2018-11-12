@@ -65,7 +65,7 @@ class Wallet(object):
         """
         pkbin = unhexlify(public_key)
         addressbin = crypto.ripemd160(hexlify(hashlib.sha256(pkbin).digest()))
-        address = crypto.base58_check_encode('0x00', addressbin.hex())
+        address = crypto.base58_check_encode(0x00, addressbin.hex())
         print('address = ', address)
         return address
 
@@ -75,7 +75,7 @@ class Wallet(object):
 
     # 导出WIF格式的私钥
     def export_wif_privatekey(self) -> str:
-        return crypto.base58_check_encode('0x80', self.private_key)
+        return crypto.base58_check_encode(0x80, self.private_key)
 
     # 导出压缩WIF格式的私钥
     def export_compress_privatekey(self) -> str:
@@ -90,6 +90,6 @@ class Wallet(object):
 
 
 if __name__ == '__main__':
-    wallet = Wallet(anyword='cnm li xiao lai')
+    wallet = Wallet(anyword='Hello World')
     # wallet = Wallet(hashlib.sha256(bytes('Hello World', 'utf-8')).digest().hex())
     print('wallet=', wallet.__str__())
