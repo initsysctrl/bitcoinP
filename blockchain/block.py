@@ -6,8 +6,8 @@
 @time: 2018/11/5 4:24 PM
 @describe:
 """
-import json
 import hashlib
+import json
 
 
 class Block:
@@ -22,7 +22,7 @@ class Block:
         self.trans = []
         # 区块主标识符是它的加密哈希值，⼀个通过SHA256算法对区块头进⾏⼆次哈希计算⽽得到的数字指纹
 
-    def get_hash(self):
+    def hash(self):
         block_string = json.dumps(self.block_head, sort_keys=True).encode()
         return hashlib.sha256(block_string).hexdigest()
 
