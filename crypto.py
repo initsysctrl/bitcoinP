@@ -53,8 +53,13 @@ def ripemd160(s):
 # https://steemitimages.com/0x0/https://steemitimages.com/DQmR6osyE59XryeuQyffbf74WoMcN9vcMs8xYnQ9qDMH3tP/image.png
 def base58_check_encode(version, payload):
     s = ('%.2x' % version) + payload
-    checksum = doublesha256(s)[:4]
+    print('s=', s)
+    dh = doublesha256(s)
+    print('double hash s =', dh.hex())
+    checksum = dh[:4]
+    print('checksum=', checksum.hex())
     result = s + hexlify(checksum).decode('ascii')
+    print('result=', result)
     return base58encode(result)
     # s = version + payload
     # checksum = doublesha256(s)[:4]
@@ -63,7 +68,11 @@ def base58_check_encode(version, payload):
 
 
 def doublesha256(s):
-    return hashlib.sha256(hashlib.sha256(s.encode()).digest()).digest()
+    h1 = hashlib.sha256(s.encode()).digest().hex()
+    # print('h1=', h1)
+    h2 = hashlib.sha256(h1.encode()).digest()
+    # print('h2=', h2.hex())
+    return h2
 
 
 def base58_check_decode(s):

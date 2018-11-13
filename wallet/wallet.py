@@ -35,8 +35,8 @@ class Wallet(object):
         public_key = self._creat_publickey(self.private_key)
         self.public_key_compress = public_key[0]
         self.public_key_uncompress = public_key[1]
-        self.address = self._creat_address(self.public_key_compress)
-        self.address_un = self._creat_address(self.public_key_uncompress)
+        self.address = self.creat_address(self.public_key_compress)
+        self.address_un = self.creat_address(self.public_key_uncompress)
 
     # 私钥生成公钥
     @classmethod
@@ -57,7 +57,7 @@ class Wallet(object):
 
     # 由公钥生成地址
     @classmethod
-    def _creat_address(cls, public_key: str) -> str:
+    def creat_address(cls, public_key: str) -> str:
         """
 
         :param public_key: 公钥
@@ -66,6 +66,7 @@ class Wallet(object):
         pkbin = unhexlify(public_key)
         addressbin = crypto.ripemd160(hexlify(hashlib.sha256(pkbin).digest()))
         address = crypto.base58_check_encode(0x00, addressbin.hex())
+        print('double hash=', addressbin.hex())
         print('address = ', address)
         return address
 
@@ -90,6 +91,7 @@ class Wallet(object):
 
 
 if __name__ == '__main__':
-    wallet = Wallet(anyword='Hello World')
-    # wallet = Wallet(hashlib.sha256(bytes('Hello World', 'utf-8')).digest().hex())
-    print('wallet=', wallet.__str__())
+    wallet1 = Wallet(anyword='Hello World')
+    wallet2 = Wallet(privatea_key_hex='18e14a7b6a307f426a94f8114701e7c8e774e7f9a47e2c2035db29a206321725')
+    print('wallet=', wallet1.__str__())
+    print('wallet=', wallet2.__str__())
