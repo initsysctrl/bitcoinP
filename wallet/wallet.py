@@ -6,11 +6,9 @@
 @time: 2018/11/1 11:01 AM
 @describe: 
 """
+import binascii
 import hashlib
 import secrets
-from binascii import hexlify, unhexlify
-
-import ecdsa.ecdsa
 
 import crypto
 
@@ -29,69 +27,61 @@ class Wallet(object):
         elif wifprivate is not None:
             self.private_key = crypto.base58_check_decode(base58private)
         elif anyword is not None:
-            self.private_key = hashlib.sha256(bytes(anyword, 'utf-8')).digest().hex()
+            self.private_key = hashlib.sha256(bytes(anyword, 'utf-8')).hexdigest()
         else:
             self.private_key = hex(secrets.randbits(256))[2:]
-        public_key = self._creat_publickey(self.private_key)
-        self.public_key_compress = public_key[0]
-        self.public_key_uncompress = public_key[1]
-        self.address = self.creat_address(self.public_key_compress)
-        self.address_un = self.creat_address(self.public_key_uncompress)
+            # 1：public-key
+        public_key = crypto.privakey_to_publickey(private_key_hex=self.private_key)
+        # 2：first hash
+        h1 = hashlib.sha256(binascii.unhexlify(public_key)).hexdigest()
+        # 3：second hash
+        h2 = hashlib.new('ripemd160', binascii.unhexlify(h1)).hexdigest()
+        # 4：add network bytes
+        ver_plaload = '00' + h2
+        # 5:SHA-256 hash of '4'
+        sha1 = hashlib.sha256(binascii.unhexlify(ver_plaload)).hexdigest()
+        # 6:SHA-256 hash of '5'
+        sha2 = hashlib.sha256(binascii.unhexlify(sha1)).hexdigest()
+        # 7:First four bytes of '6'，4bytes=8bit
+        checksum = sha2[:8]
+        # 8: Adding 7 at the end of "4"
+        full_load = ver_plaload + checksum
 
-    # 私钥生成公钥
-    @classmethod
-    def _creat_publickey(cls, private_key_hex: str) -> tuple:
-        """
+        # 9:Base58 encoding of 8
+        address = crypto.base58encode(full_load)
 
-        :param private_key_hex: 私钥 hex格式的
-        :return: 压缩和未被压缩的公钥
-        """
-        secret = unhexlify(private_key_hex)
-        order = ecdsa.SigningKey.from_string(secret, curve=ecdsa.SECP256k1).curve.generator.order()
-        p = ecdsa.SigningKey.from_string(secret, curve=ecdsa.SECP256k1).verifying_key.pubkey.point
-        x_str = ecdsa.util.number_to_string(p.x(), order)
-        y_str = ecdsa.util.number_to_string(p.y(), order)
-        compressed = hexlify(bytes(chr(2 + (p.y() & 1)), 'ascii') + x_str).decode('ascii')
-        uncompressed = hexlify(bytes(chr(4), 'ascii') + x_str + y_str).decode('ascii')
-        return compressed, uncompressed
-
-    # 由公钥生成地址
-    @classmethod
-    def creat_address(cls, public_key: str) -> str:
-        """
-
-        :param public_key: 公钥
-        :return:
-        """
-        pkbin = unhexlify(public_key)
-        addressbin = crypto.ripemd160(hexlify(hashlib.sha256(pkbin).digest()))
-        address = crypto.base58_check_encode(0x00, addressbin.hex())
-        print('double hash=', addressbin.hex())
-        print('address = ', address)
-        return address
+        self.publickey = public_key
+        self.publickeyhash = h2
+        self.address = address
 
     # 导出base58格式的私钥
     def export_base58_privatekey(self) -> str:
+
         return crypto.base58encode(self.private_key)
 
     # 导出WIF格式的私钥
     def export_wif_privatekey(self) -> str:
-        return crypto.base58_check_encode(0x80, self.private_key)
+
+        return crypto.base58_check_encode(self.private_key, '0x80')
 
     # 导出压缩WIF格式的私钥
     def export_compress_privatekey(self) -> str:
+
         return crypto.base58_check_encode(0x80, self.private_key + '01')
 
     def __str__(self):
+
         return 'private key(HEX):' + self.private_key + '\n' \
-               + 'public key(compress):' + self.public_key_compress + '\n' \
-               + 'public key (uncompress):' + self.public_key_uncompress + '\n' \
-               + 'address(C):' + self.address + '\n' \
-               + 'address(U):' + self.address_un
+               + 'public key (uncompress):' + self.publickey + '\n' \
+               + 'public key hash(uncompress):' + self.publickeyhash + '\n' \
+               + 'address(U):' + self.address + '\n'
 
 
 if __name__ == '__main__':
-    wallet1 = Wallet(anyword='Hello World')
-    wallet2 = Wallet(privatea_key_hex='18e14a7b6a307f426a94f8114701e7c8e774e7f9a47e2c2035db29a206321725')
-    print('wallet=', wallet1.__str__())
-    print('wallet=', wallet2.__str__())
+    wallet = Wallet(anyword="caonimalixiaolai")
+    # wallet = Wallet(privatea_key_hex='18e14a7b6a307f426a94f8114701e7c8e774e7f9a47e2c2035db29a206321725')
+    print('wallet=', wallet.__str__())
+    # print('wallet=', wallet2.__str__())
+
+# 14EvJWPvFNLnzBBzhm1AG9a5b6XiSBFs6R
+# 4EvJWPvFNLnzBBzhm1AG9a5b6XiTTWrcb
