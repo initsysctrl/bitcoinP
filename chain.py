@@ -4,9 +4,9 @@
 @license: Apache Licence 
 @contact: initsysctrl@163.com
 @time: 2018/11/5 4:15 PM
-@describe: 
+@describe: 链
 """
-from blockchain.block import Block
+from block import Block
 
 
 class BlockChain:

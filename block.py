@@ -4,7 +4,7 @@
 @license: Apache Licence 
 @contact: initsysctrl@163.com
 @time: 2018/11/5 4:24 PM
-@describe:
+@describe: 区块
 """
 import hashlib
 import json

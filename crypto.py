@@ -4,7 +4,7 @@
 @license: Apache Licence 
 @contact: initsysctrl@163.com
 @time: 2018/11/12 8:22 AM
-@describe: 
+@describe: 加密实现
 """
 import binascii
 import hashlib

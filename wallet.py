@@ -4,7 +4,7 @@
 @license: Apache Licence 
 @contact: initsysctrl@163.com
 @time: 2018/11/1 11:01 AM
-@describe: 
+@describe: 钱包 模型
 """
 import binascii
 import hashlib
@@ -76,12 +76,3 @@ class Wallet(object):
                + 'public key hash(uncompress):' + self.publickeyhash + '\n' \
                + 'address(U):' + self.address + '\n'
 
-
-if __name__ == '__main__':
-    wallet = Wallet(anyword="caonimalixiaolai")
-    # wallet = Wallet(privatea_key_hex='18e14a7b6a307f426a94f8114701e7c8e774e7f9a47e2c2035db29a206321725')
-    print('wallet=', wallet.__str__())
-    # print('wallet=', wallet2.__str__())
-
-# 14EvJWPvFNLnzBBzhm1AG9a5b6XiSBFs6R
-# 4EvJWPvFNLnzBBzhm1AG9a5b6XiTTWrcb

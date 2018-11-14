@@ -4,7 +4,7 @@
 @license: Apache Licence 
 @contact: initsysctrl@163.com
 @time: 2018/11/5 5:29 PM
-@describe: 
+@describe: 交易模型
 """
 
 import time
