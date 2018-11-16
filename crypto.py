@@ -34,6 +34,17 @@ def base58decode(base58_str):
     return hexlify(bytearray(1) * leading_zeroes_count + res).decode('ascii')
 
 
+'''
+1.将字符串转换为十六进制
+
+2.将十六进制转换为十进制
+
+3.将十进制转换为58中字符
+
+4.颠倒字符串的顺序
+'''
+
+
 def base58encode(hexstring):
     byteseq = bytes(unhexlify(bytes(hexstring, 'ascii')))
     n = 0
@@ -50,17 +61,6 @@ def base58encode(hexstring):
     else:
         res.insert(0, BASE58_ALPHABET[n])
     return (BASE58_ALPHABET[0:1] * leading_zeroes_count + res).decode('ascii')
-
-
-'''
-1.将字符串转换为十六进制
-
-2.将十六进制转换为十进制
-
-3.将十进制转换为58中字符
-
-4.颠倒字符串的顺序
-'''
 
 
 def ripemd160(s):
@@ -86,8 +86,8 @@ def base58_check_encode(load=None, version='00'):
     return base58encode(full_load)
 
 
-def doublesha256(s):
-    h1 = hashlib.sha256(unhexlify(s)).digest().hex()
+def doublesha256(hexstring: str) -> bytes:
+    h1 = hashlib.sha256(unhexlify(hexstring)).hexdigest()
     h2 = hashlib.sha256(unhexlify(h1)).digest()
     return h2
 
