@@ -7,6 +7,7 @@
 @describe: 交易模型
 """
 
+import json
 import time
 
 # 版本号
@@ -56,6 +57,31 @@ class Transction(object):
         self.output_count = 0 if (_outputs is None) else len(_outputs)
         self.timestamp = time.time_ns()
 
+    def serialization(self):
+        vin = []
+        vout = []
+        for i in self.inputs:
+            vi = dict()
+            vi['txid'] = i.txid
+            vi['vout'] = i.vout
+            vi['scriptSig'] = i.scriptSig
+            vi['sequence'] = i.sequence
+            vin.append(vi)
+
+        for i in self.outputs:
+            vo = dict()
+            vo['value'] = i.value
+            vo['scriptPubKey'] = i.scriptPubKey
+            vout.append(vo)
+
+        s = dict()
+        s['txid'] = self.txid
+        s['version'] = self.version
+        s['vin'] = vin
+        s['vout'] = vout
+
+        return json.dumps(s, skipkeys=True, indent=4)
+
     def __str__(self) -> str:
         return str(self.__dict__)
 
@@ -81,4 +107,4 @@ if __name__ == '__main__':
     inputs = [VIn('li xiao lai cao ni ma ', 123, 'aaa', 23123213213), VIn('li xiao lai cao ni ma ', 123, 'aaa', 2)]
     outputs = [VOut(12.22222, 'outoutoutout', )]
     t = Transction(inputs, outputs)
-    print(t)
+    print(t.serialization())

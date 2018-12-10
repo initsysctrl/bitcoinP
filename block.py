@@ -11,7 +11,7 @@ import hashlib
 import json
 import time
 
-from markle import Markle
+from markle import MarkleTree
 
 """
 The blockchain data structure is an ordered, back-linked list of blocks of transactions. The
@@ -33,12 +33,12 @@ the use of terms such as "height" to refer to the distance from the first block,
 
 
 class Block:
-    def __init__(self, pre_block_hash, nonce, trans):
+    def __init__(self, pre_block_hash: str, nonce: int, trans: list):
         # 大小
         self.size = 0
         # 区块头
         self.block_head = {"difficulty": 1,
-                           "merkleroot": Markle.get_root(),
+                           "merkleroot": MarkleTree.get_root(),
                            "nonce": nonce,
                            "previousblockhash": pre_block_hash,
                            "timestamp": time.time_ns(),

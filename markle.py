@@ -8,21 +8,21 @@
 """
 
 
-class Markle:
-    def __int__(self, datas):
-        if datas is None:
+class MarkleTree:
+    def __init__(self, dates):
+        if dates is None:
             raise TypeError('datas is None!')
-        if not isinstance(datas, tuple):
+        if not isinstance(dates, tuple):
             raise TypeError('datas type only is tuple or list')
         self.datas = datas
 
-    @classmethod
-    def get_root(cls):
-        pass
-
-    def get_node(self):
-        pass
+    def __str__(self) -> str:
+        return str(self.__dict__)
 
 
 if __name__ == '__main__':
+    datas = ('a', 'b', 'c', 'd', 'e')
+    m = MarkleTree(datas)
+    print(m.datas)
+    # m.get_root()
     pass
