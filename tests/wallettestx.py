@@ -13,7 +13,7 @@ import crypto
 
 if __name__ == '__main__':
     # 0:Private ECDSA Key
-    anyword = "ethereum"
+    anyword = "HelloWorld"
     private_key = hashlib.sha256(bytes(anyword, 'utf-8')).hexdigest()
     print('private_key=', private_key)
     # 1：public-key

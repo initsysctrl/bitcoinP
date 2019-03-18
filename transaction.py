@@ -5,8 +5,18 @@
 @contact: initsysctrl@163.com
 @time: 2018/11/5 5:29 PM
 @describe: 交易模型
+签名的大致流程如下：
+
+1、准备好一个原始的交易数据；
+
+2、对这个原始的交易数据进行两次SHA256 hash运算，得到固定长度的hash散列；
+
+3、使用椭圆曲线算法，结合你自己的私钥，对上述的hash散列值进行加密计算，得到签名数据；
+
+
 """
 
+import hashlib
 import json
 import time
 
@@ -21,6 +31,7 @@ class VIn:
 
     def __init__(self, _txid: str, _vout: int, _scriptsig: str, _sequence: int):
         # txid，vout，scriptSig，sequence
+        # txid:来自哪个交易，vout：来自交易输出的角标 scriptSig
         self.txid = _txid
         self.vout = _vout
         self.scriptSig = _scriptsig
@@ -82,24 +93,46 @@ class Transction(object):
 
         return json.dumps(s, skipkeys=True, indent=4)
 
+    # 获取交易哈希
+    def get_txid(self):
+        uid = hashlib.sha256(bytes(self.serialization(), 'utf-8')).hexdigest()
+        self.txid = uid
+        return self.txid
+
     def __str__(self) -> str:
         return str(self.__dict__)
 
+    #  验证是否属于coinbase交易类型
     def is_coinbase_trans(self) -> bool:
+        return len(self.inputs) == 1 and self.inputs[0].txid == 0 and self.inputs[0].vout == -1
+
+    #  验证交易合法性
+    def verify(self) -> bool:
+        if self.is_coinbase_trans():
+            return True
+        pass
+
+    # 签名交易
+    def sign(self, private_key, txs):
         """
-        是否属于coinbase交易类型
-        :rtype: true
+        交易签名
+        :param private_key:
+        :param txs:
         """
-        return self.input_count == 0 and self.output_count == 1
+        if self.is_coinbase_trans():
+            return
+        for vi in self.inputs:
+            pass
+        pass
 
 
 # 创建 coinbase 交易
-def creat_coinbase_transaction() -> object:
+def creat_coinbase_transaction(to, date) -> str:
     pass
 
 
 # 创建UTXO交易
-def creat_utxo_transaction():
+def creat_utxo_transaction(to, amount, utxos) -> str:
     pass
 
 
@@ -108,3 +141,4 @@ if __name__ == '__main__':
     outputs = [VOut(12.22222, 'outoutoutout', )]
     t = Transction(inputs, outputs)
     print(t.serialization())
+    print(t.get_txid())
